@@ -10,73 +10,82 @@ void showArray(int array[], int numberElements, const string &description = "") 
     cout << "\n\n";
 }
 
-void linerSearch(const int array[], int numberElements, int numberToSearch) {
-    int numberComparisons = 0;
+void linerSearch(const int array[], int numberElements, int numbersForSearch) {
+    for (int j = 1; j < numbersForSearch + 1; ++j) {
+        int numberComparisons = 1;
 
-    for (int i = 0; i < numberElements; ++i) {
-        if (array[i] == numberToSearch) {
-            break;
+        for (int i = 0; i < numberElements; ++i) {
+            if (array[i] == j) {
+                break;
+            } else {
+                numberComparisons++;
+            }
+        }
+
+        if (numberComparisons - 1 == numberElements) {
+            cout << "Number " << j << " is not in the array" << "\n";
         } else {
-            numberComparisons++;
+            cout << "Number of comparisons for " << j << ": " << numberComparisons << "\n";
         }
     }
 
-    if (numberComparisons == numberElements) {
-        cout << "No such number in array " << "\n\n";
-    } else {
-        cout << "Number of comparisons: " << numberComparisons << "\n\n";
-    }
+    cout << "\n";
 }
 
-void binarySearch(const int array[], int numberElements, int numberToSearch) {
-    int newArray[numberElements];
+void binarySearch(const int array[], int numberElements, int numbersForSearch) {
+    int sortedArray[numberElements];
 
     for (int i = 0; i < numberElements; i++) {
-        newArray[i] = array[i];
+        sortedArray[i] = array[i];
     }
 
-    int len = sizeof(newArray) / sizeof(newArray[0]);
-    sort(newArray, newArray + len);
+    int len = sizeof(sortedArray) / sizeof(sortedArray[0]);
+    sort(sortedArray, sortedArray + len);
 
-    showArray(newArray, numberElements, "Sorted array");
+    showArray(sortedArray, numberElements, "Sorted array");
 
-    int low = 0;
-    int high = numberElements;
-    int numberComparisons = 0;
+    for (int i = 1; i < numbersForSearch + 1; ++i) {
+        int low = 0;
+        int high = len;
+        int numberComparisons = 1;
+        int isDefined = 0;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int guess = sortedArray[mid];
 
-    while (low <= high) {
-        int mid = (low + high) / 2;
-        int guess = newArray[mid];
-
-        if (guess == numberToSearch) {
-            cout << "Element found at " << mid << " th index" << "\n";
-            cout << "Number of comparisons: " << numberComparisons;
-            return;
-        } else if (guess > numberToSearch) {
-            high = mid - 1;
-        } else {
-            low = mid + 1;
+            if (guess == i) {
+                cout << "Number of comparisons for " << i << ": " << numberComparisons << "\n";
+                isDefined++;
+                break;
+            } else if (guess > i) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+            numberComparisons++;
         }
-        numberComparisons++;
+
+        if (!isDefined) {
+            cout << "Number " << i << " is not in the array" << "\n";
+        }
     }
-    cout << "Element not found" << "\n";
 }
 
 int main() {
-    const int numberElements = 500;
-    int numberToSearch = 435;
+    const int numberElements = 20;
+    int numbersForSearch = 30;
     int array[numberElements];
 
     srand((unsigned) time(0));
 
     for (int i = 0; i < numberElements; i++) {
-        int randomNumber = (rand() % 1000) + 1;
+        int randomNumber = (rand() % 30) + 1;
         array[i] = randomNumber;
     }
 
     showArray(array, numberElements, "No sorted array");
-    linerSearch(array, numberElements, numberToSearch);
-    binarySearch(array, numberElements, numberToSearch);
+    linerSearch(array, numberElements, numbersForSearch);
+    binarySearch(array, numberElements, numbersForSearch);
 
     return 0;
 }
